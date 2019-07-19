@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -13,7 +13,9 @@ module Constants
     FF      = 'FF'       # Firefox
     M       = 'M'        # Mozilla
     IE      = 'IE'       # Internet Explorer
+    E       = 'E'        # Microsoft Edge
     S       = 'S'        # Safari
+    EP      = 'EP'       # Epiphany
     K       = 'K'        # Konqueror
     C       = 'C'        # Chrome
     O       = 'O'        # Opera
@@ -27,7 +29,9 @@ module Constants
     FRIENDLY_FF_NAME  = 'Firefox'
     FRIENDLY_M_NAME   = 'Mozilla'
     FRIENDLY_IE_NAME  = 'Internet Explorer'
+    FRIENDLY_E_NAME   = 'Microsoft Edge'
     FRIENDLY_S_NAME   = 'Safari'
+    FRIENDLY_EP_NAME  = 'Epiphany'
     FRIENDLY_K_NAME   = 'Konqueror'
     FRIENDLY_C_NAME   = 'Chrome'
     FRIENDLY_O_NAME   = 'Opera'
@@ -46,7 +50,9 @@ module Constants
         when FF;       return FRIENDLY_FF_NAME
         when M ;       return FRIENDLY_M_NAME
         when IE;       return FRIENDLY_IE_NAME
+        when E ;       return FRIENDLY_E_NAME
         when S ;       return FRIENDLY_S_NAME
+        when EP;       return FRIENDLY_EP_NAME
         when K ;       return FRIENDLY_K_NAME
         when C ;       return FRIENDLY_C_NAME
         when O ;       return FRIENDLY_O_NAME

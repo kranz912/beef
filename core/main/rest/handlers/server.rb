@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -48,6 +48,10 @@ module BeEF
           rescue => e
             error 400
           end
+        end
+
+        get '/mounts' do
+          { 'mounts' => http_server.mounts }.to_json
         end
 
         get '/version' do

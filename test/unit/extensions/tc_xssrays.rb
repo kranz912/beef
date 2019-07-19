@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -40,7 +40,6 @@ class TC_XssRays < Test::Unit::TestCase
     assert(@@xssrays_config.has_key?('enable'))
     assert(@@xssrays_config.has_key?('clean_timeout'))
     assert(@@xssrays_config.has_key?('cross_domain'))
-    assert(@@xssrays_config.has_key?('js_console_logs'))
   end
 
   # Verifies public interface

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -507,20 +507,7 @@ class Core
     target_opts = %w{commands}
     print_status("If you're targeting a module, you can also specify: #{target_opts.join(", ")}")
   end
-  
-  def beef_logo_to_os(logo)
-	  case logo
-    when "mac.png"
-      hbos = "Mac OS X"
-    when "linux.png"
-      hbos = "Linux"
-    when "win.png"
-      hbos = "Microsoft Windows"
-    when "unknown.png"
-      hbos = "Unknown"
-    end
-  end
-  
+
 end
 
 end end end end

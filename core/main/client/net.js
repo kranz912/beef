@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+// Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 // Browser Exploitation Framework (BeEF) - http://beefproject.com
 // See the file 'doc/COPYING' for copying permission
 //
@@ -512,6 +512,35 @@ beef.net = {
             }
         }
         return false;
+    },
+
+    /**
+     * Checks if the specified port is valid
+     */
+    is_valid_port: function (port) {
+      if (isNaN(port)) return false;
+      if (port > 65535 || port < 0) return false;
+      return true;
+    },
+
+    /**
+     * Checks if the specified IP address is valid
+     */
+    is_valid_ip: function (ip) {
+      if (ip == null) return false;
+      var ip_match = ip.match('^([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))$');
+      if (ip_match == null) return false;
+      return true;
+    },
+
+    /**
+     * Checks if the specified IP address range is valid
+     */
+    is_valid_ip_range: function (ip_range) {
+      if (ip_range == null) return false;
+      var range_match = ip_range.match('^([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\-([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))\.([0-9]|[1-9][0-9]|1([0-9][0-9])|2([0-4][0-9]|5[0-5]))$');
+      if (range_match == null || range_match[1] == null) return false;
+      return true;
     },
 
     /**

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -50,9 +50,21 @@ class TC_Modules < Test::Unit::TestCase
 
   def test_safe_client_debug_log
     Dir['../../modules/**/*.js'].each do |path|
+      next unless File.file?(path)
       File.open(path) do |f|
-        f.grep(/\W*console\.log\W*\(/im) do |line|
+        f.grep(/\bconsole\.log\W*\(/m) do |line|
           assert(false, "Function 'console.log' used instead of 'beef.debug' in command module: " + path + ':' + line)
+        end
+      end
+    end
+  end
+
+  def test_safe_variable_decleration
+    Dir['../../modules/**/*.js'].each do |path|
+      next unless File.file?(path)
+      File.open(path) do |f|
+        f.grep(/\blet\W+[a-zA-Z0-9_\.]+\W*=/) do |line|
+          assert(false, "Variable decleration with 'let' used instead of 'var' in command module: " + path + ':' + line)
         end
       end
     end

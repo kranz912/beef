@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2017 Wade Alcorn - wade@bindshell.net
+# Copyright (c) 2006-2019 Wade Alcorn - wade@bindshell.net
 # Browser Exploitation Framework (BeEF) - http://beefproject.com
 # See the file 'doc/COPYING' for copying permission
 #
@@ -29,6 +29,18 @@ module BeEF
         end
 
         #
+        # @note Get all global logs
+        #
+        get '/rss' do
+          logs = BeEF::Core::Models::Log.all
+          headers 'Content-Type'  => 'text/xml; charset=UTF-8',
+                  'Pragma'        => 'no-cache',
+                  'Cache-Control' => 'no-cache',
+                  'Expires'       => '0'
+          logs_to_rss logs
+        end
+
+        #
         # @note Get hooked browser logs
         #
         get '/:session' do
@@ -50,7 +62,8 @@ module BeEF
                 'id' => log.id.to_i,
                 'date' => log.date.to_s,
                 'event' => log.event.to_s,
-                'type' => log.type.to_s
+                'type' => log.type.to_s,
+                'hooked_browser_id' => log.hooked_browser_id.to_s
             }
           end
 
@@ -59,6 +72,24 @@ module BeEF
               'logs' => logs_json
           }.to_json if not logs_json.empty?
 
+        end
+
+        def logs_to_rss(logs)
+          rss = RSS::Maker.make('atom') do |maker|
+            maker.channel.author  = 'BeEF'
+            maker.channel.updated = Time.now.to_s
+            maker.channel.about   = 'https://beefproject.com/'
+            maker.channel.title   = 'BeEF Event Logs'
+
+            logs.reverse.each do |log|
+              maker.items.new_item do |item|
+                item.id      = log.id.to_s
+                item.title   = "[#{log.type}] #{log.event}"
+                item.updated = log.date.to_s
+              end
+            end
+          end
+          rss.to_s
         end
 
       end
